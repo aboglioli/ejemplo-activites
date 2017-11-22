@@ -10,9 +10,16 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import com.progavanzada.ejemploactivities.db.DB;
+import com.progavanzada.ejemploactivities.messages.Messages;
+import com.progavanzada.ejemploactivities.models.Usuario;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String USER_MESSAGE = "USER_MESSAGE";
+    private DB db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +36,26 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        // Inicializa la DB
+        this.db = new DB(MainActivity.this);
+
+        // Crea usuario por defecto
+        boolean existingUser = this.db.checkUsuario("admin@admin.com");
+        if(!existingUser) {
+            Usuario admin = new Usuario("Admin", "admin@admin.com", "admin");
+            this.db.agregarUsuario(admin);
+        }
+
+        TextView userCount = (TextView) findViewById(R.id.userCount);
+
+        List<Usuario> users = this.db.getAllUsuario();
+        userCount.setText("Existen " + users.size() + " usuarios");
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -58,14 +80,16 @@ public class MainActivity extends AppCompatActivity {
     public void login(View view) {
         Intent intent = new Intent(this, ProfileActivity.class);
 
-        EditText userText = (EditText) findViewById(R.id.userText);
+        EditText userText = (EditText) findViewById(R.id.emailText);
         EditText passwordText = (EditText) findViewById(R.id.passwordText);
 
         String user = userText.getText().toString();
         String password = passwordText.getText().toString();
 
-        if(user.equals("user") && password.equals("passwd")) {
-            intent.putExtra(USER_MESSAGE, user);
+        boolean correctUser = this.db.checkUsuario(user, password);
+
+        if(correctUser) {
+            intent.putExtra(Messages.MAIN_MESSAGE, user);
             startActivity(intent);
         } else {
             Snackbar.make(view, "Usuario o contraseña incorrectos", Snackbar.LENGTH_LONG)

@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">Ejemplo Activities</string>
     <string name="action_settings">Configuración</string>
-    <string name="user_text">Usuario</string>
-    <string name="password_text">Contraseña</string>
+    <string name="user_text">admin@admin.com</string>
+    <string name="password_text">admin</string>
     <string name="login_button">ENTRAR</string>
-    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_profile">Perfil</string>
     <string name="profile_user">Usuario</string>
     <string name="profile_name">Nombre</string>
+    <string name="title_activity_login">Entrar</string>
 </resources>
